@@ -7,34 +7,40 @@
     
     <body>
         <h1 Sign Up></h1>
-        
-            First Name: <input type="text" name="fName"><br>
-            Last Name: <input type="text" name="lName"><br>
-            Gender: <input type="radio" name="gender" value="m"> Male
-                    <input type="radio" name="gender" value="f"> Female <br><br>
-            
-            Zip Code: <input type="text" name="zip" id="zip"><br>
-            City: <span id="city"></span><br>
-            Latitude: <br>
-            Longitude: <br><br>
-            
-            State: 
-            <select id="state" name="state">
-                <option value="">Select One</option>
-                <option value="ca">California</option>
-                <option value="ny">New York</option>
-                <option value="tx">Texas</option>
-            </select><br />
-            
-            Select a County: <select id="county"></select><br><br>
-            
-            Desired Username: <input type="text" id="username" name="username"><br>
-            Password: <input type="password" id="password" name="password"><br>
-            Password Again: <input type="password" id="passwordAgain"><br>
-            
-            <input type="submit" value="sign up!">
+            <form id="signupForm" method="post" action="welcome.html">
+                First Name: <input type="text" name="fName"><br>
+                Last Name: <input type="text" name="lName"><br>
+                Gender: <input type="radio" name="gender" value="m"> Male
+                        <input type="radio" name="gender" value="f"> Female <br><br>
+                
+                Zip Code: <input type="text" name="zip" id="zip"><br>
+                City: <span id="city"></span><br>
+                Latitude: <span id="latitude"></span><br>
+                Longitude: <span id="longitude"></span><br><br>
+                
+                State: 
+                <select id="state" name="state">
+                    <option value="">Select One</option>
+                    <option value="ca">California</option>
+                    <option value="ny">New York</option>
+                    <option value="tx">Texas</option>
+                </select><br />
+                
+                Select a County: <select id="county"></select><br><br>
+                
+                Desired Username: <input type="text" id="username" name="username"><br>
+                                  <span id="usernameError"></span><br>
+                Password: <input type="password" id="password" name="password"><br>
+                Password Again: <input type="password" id="passwordAgain"><br>
+                                <span id="passwordLengthCheck"></span><br>
+                                <span id="passwordAgainError"></span><br /><br>
+                
+                <input type="submit" value="sign up!">
+            </form>
             
         <script>
+        
+            var usernameAvailable = false;
             /*global $*/
             //Displaying City from API after typing a zip code
             $("#zip").on("change",function(){
@@ -45,14 +51,109 @@
                     dataType: "json",
                         data: { "zip": $("#zip").val() },
                     success: function(result,status) {
-                      
-                         alert(result);
- 
+                         //alert(result);
+                         $("#city").html(result.city);
+                         $("#latitude").html(result.latitude);
+                         $("#longitude").html(result.longitude);
                     } 
                 });//ajax
-
-                
             });//zip
+            
+            
+            $("#state").on("change",function(){
+                
+                //alert($("#state").val());
+                $.ajax({
+                      method: "GET",
+                         url: "https://cst336.herokuapp.com/projects/api/countyListAPI.php",
+                    dataType: "json",
+                        data: { "state": $("#state").val() },
+                    success: function(result,status) {
+                      
+                        //  alert(result[0].county)
+                        for (let i=0; i < result.length; i++){
+                            $("#county").append("<option>" + result[i].county + "</option>");
+                        }
+                    } 
+                });//ajax
+            });//state
+            
+            
+            $("#username").change(function(){
+                
+                //alert($("#username").val());
+                $.ajax({
+                      method: "GET",
+                         url: "https://cst336.herokuapp.com/projects/api/usernamesAPI.php",
+                    dataType: "json",
+                        data: { "username": $("#username").val() },
+                    success: function(result,status) {
+                        if(result.available){
+                            $("#usernameError").html("Username is available!");
+                            $("#usernameError").css("color","green");
+                            usernameAvailable = true;
+                        } 
+                        else {
+                            $("#usernameError").html("Username is unavailable!");
+                            $("#usernameError").css("color","red");
+                            usernameAvailable = false;
+                        }
+                    } 
+                });//ajax
+            });//username
+            
+            $("#password").change(function(){
+                $("#passwordLengthCheck").html("");
+                if(!lenCheckPassword($("#password").val().length)) {
+                    $("#passwordLengthCheck").html("Password must be at least 6 characters!");
+                    $("#passwordLengthCheck").css("color","red");
+                }
+            });
+            
+            $("#signupForm").on("submit",function(event) {
+               
+            //   alert("Submitting form...");
+               if (!isFormValid()){
+                   event.preventDefault();
+               }
+               else {
+                   window.open("welcome.html");
+               }
+            });
+            
+            function lenCheckPassword(inputLength){
+                let isMinLength = true;
+                if (inputLength < 6){
+                    isMinLength = false;
+                }
+                return isMinLength;
+                
+            }
+            
+            function isFormValid(){
+                let isValid = true;
+                if (!usernameAvailable){
+                    isValid = false;
+                }
+                
+                if ($("#username").val().length ==0){
+                    $("#usernameError").html("Username is required");
+                    $("#usernameError").css("color","red");
+                    isValid = false;
+                }
+                
+                if ($("#password").val() != $("#passwordAgain").val()){
+                    $("#passwordAgainError").html("Password Mismatch!");
+                    $("#passwordAgainError").css("color","red");
+                    isValid = false;
+                }
+                
+                if ($("#password").val().length < 6) {
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
             
         </script>
     </body>
