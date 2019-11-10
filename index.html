@@ -9,8 +9,9 @@
     </head>
     
     <body>
-        <h1 Sign Up></h1>
-            <form id="signupForm" method="POST" action="welcome.html">
+        <br></br>
+        <h1>Sign Up Form</h1>
+            <form id="signupForm" method="post" action="welcome.html" >
             <table>
                 <tr>
                     <td class="title">First Name: </td>
@@ -35,8 +36,12 @@
                     <td class="vals"><input type="text" name="zip" id="zip"></td>
                 </tr>
                 <tr>
-                    <td class="title">City:<td> 
-                    <td class="vals"><span id="city"></span></td>
+                    <td> </td>
+                    <td class="vals"><span id="zipCheck"> </span></td>
+                </tr>
+                <tr>
+                    <td class="title">City: </td> 
+                    <td class="vals"><span id="city"> </span></td>
                 </tr>
                 <tr>
                     <td class="title">Latitude: </td>
@@ -73,19 +78,26 @@
                     <td class="title">Password:</td>
                     <td class="vals">
                         <input type="password" id="password" name="password">
-                        <span id="passwordLengthCheck"></span>
+                        
                     </td>
                 </tr>
                 <tr>
                     <td class="title">Password Again: </td>
                     <td class="vals">
                         <input type="password" id="passwordAgain">
-                        
-                        <span id="passwordAgainError"></span>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" id="button"><input type="submit" value="sign up!"></td>
+                    <td> </td>
+                    <td class="vals">
+                        <span id="passwordLengthCheck"> </span><br>
+                        <span id="passwordAgainError"> </span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2" id="button">
+                        <input type="submit" value="Sign up!"></td>
                 </tr>
             </form>
         </table>

@@ -9,17 +9,26 @@ getStates();
 //==================================================
 //Displaying City from API after typing a zip code
 $("#zip").on("change",function(){
-    
+    $("#zipCheck").html("");
     $.ajax({
           method: "GET",
              url: "https://cst336.herokuapp.com/projects/api/cityInfoAPI.php",
         dataType: "json",
             data: { "zip": $("#zip").val() },
         success: function(result,status) {
-             //alert(result);
-             $("#city").html(result.city);
-             $("#latitude").html(result.latitude);
-             $("#longitude").html(result.longitude);
+            if(result){
+                 //alert(result);
+                 $("#city").html(result.city.trim());
+                 $("#latitude").html(result.latitude);
+                 $("#longitude").html(result.longitude);
+            }
+            else{
+                $("#city").html("");
+                $("#latitude").html("");
+                $("#longitude").html("");
+                $("#zipCheck").html("Zip Code Invalid!");
+                $("#zipCheck").css("color","red");
+            }
         } 
     });//ajax
 });//zip
