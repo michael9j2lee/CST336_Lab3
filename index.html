@@ -3,158 +3,93 @@
     <head>
         <title>Sign Up Page</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <link href="css/styles.css" rel="stylesheet" type="text/css" />
+        
     </head>
     
     <body>
         <h1 Sign Up></h1>
-            <form id="signupForm" method="post" action="welcome.html">
-                First Name: <input type="text" name="fName"><br>
-                Last Name: <input type="text" name="lName"><br>
-                Gender: <input type="radio" name="gender" value="m"> Male
-                        <input type="radio" name="gender" value="f"> Female <br><br>
+            <form id="signupForm" method="POST" action="welcome.html">
+            <table>
+                <tr>
+                    <td class="title">First Name: </td>
+                    <td class="vals"><input type="text" name="fName"></td>
+                </tr>
+                <tr>
+                    <td class="title">Last Name: </td>
+                    <td class="vals"><input type="text" name="lName"></td>
+                </tr>
+                <tr>
+                        <td class="title">Gender: </td>
+                        <td class="vals">
+                            <input type="radio" name="gender" value="m"> Male
+                            <input type="radio" name="gender" value="f"> Female
+                        </td>
+                </tr>
                 
-                Zip Code: <input type="text" name="zip" id="zip"><br>
-                City: <span id="city"></span><br>
-                Latitude: <span id="latitude"></span><br>
-                Longitude: <span id="longitude"></span><br><br>
+                <tr><td><br><br></td></tr>
                 
-                State: 
-                <select id="state" name="state">
-                    <option value="">Select One</option>
-                    <option value="ca">California</option>
-                    <option value="ny">New York</option>
-                    <option value="tx">Texas</option>
-                </select><br />
+                <tr>
+                    <td class="title">Zip Code: </td>
+                    <td class="vals"><input type="text" name="zip" id="zip"></td>
+                </tr>
+                <tr>
+                    <td class="title">City:<td> 
+                    <td class="vals"><span id="city"></span></td>
+                </tr>
+                <tr>
+                    <td class="title">Latitude: </td>
+                    <td class="vals"><span id="latitude"></span></td>
+                </tr>
+                <tr>
+                    <td class="title">Longitude: </td>
+                    <td class="vals"><span id="longitude"></span></td>
+                </tr>
                 
-                Select a County: <select id="county"></select><br><br>
+                <tr><td><br><br></td></tr>
                 
-                Desired Username: <input type="text" id="username" name="username"><br>
-                                  <span id="usernameError"></span><br>
-                Password: <input type="password" id="password" name="password"><br>
-                Password Again: <input type="password" id="passwordAgain"><br>
-                                <span id="passwordLengthCheck"></span><br>
-                                <span id="passwordAgainError"></span><br /><br>
+                <tr>
+                    <td class="title">State:</td> 
+                    <td class="vals">
+                        <select id="state"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">Select a County:</td> 
+                    <td class="vals"><select id="county"></select></td>
+                </tr>
                 
-                <input type="submit" value="sign up!">
+                <tr><td><br><br></td></tr>
+                
+                <tr>
+                    <td class="title">Desired Username: </td>
+                    <td class="vals">
+                        <input type="text" id="username" name="username"><br>
+                        <span id="usernameError"></span><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">Password:</td>
+                    <td class="vals">
+                        <input type="password" id="password" name="password">
+                        <span id="passwordLengthCheck"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">Password Again: </td>
+                    <td class="vals">
+                        <input type="password" id="passwordAgain">
+                        
+                        <span id="passwordAgainError"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="button"><input type="submit" value="sign up!"></td>
+                </tr>
             </form>
-            
-        <script>
+        </table>
         
-            var usernameAvailable = false;
-            /*global $*/
-            //Displaying City from API after typing a zip code
-            $("#zip").on("change",function(){
-                
-                $.ajax({
-                      method: "GET",
-                         url: "https://cst336.herokuapp.com/projects/api/cityInfoAPI.php",
-                    dataType: "json",
-                        data: { "zip": $("#zip").val() },
-                    success: function(result,status) {
-                         //alert(result);
-                         $("#city").html(result.city);
-                         $("#latitude").html(result.latitude);
-                         $("#longitude").html(result.longitude);
-                    } 
-                });//ajax
-            });//zip
-            
-            
-            $("#state").on("change",function(){
-                
-                //alert($("#state").val());
-                $.ajax({
-                      method: "GET",
-                         url: "https://cst336.herokuapp.com/projects/api/countyListAPI.php",
-                    dataType: "json",
-                        data: { "state": $("#state").val() },
-                    success: function(result,status) {
-                      
-                        //  alert(result[0].county)
-                        for (let i=0; i < result.length; i++){
-                            $("#county").append("<option>" + result[i].county + "</option>");
-                        }
-                    } 
-                });//ajax
-            });//state
-            
-            
-            $("#username").change(function(){
-                
-                //alert($("#username").val());
-                $.ajax({
-                      method: "GET",
-                         url: "https://cst336.herokuapp.com/projects/api/usernamesAPI.php",
-                    dataType: "json",
-                        data: { "username": $("#username").val() },
-                    success: function(result,status) {
-                        if(result.available){
-                            $("#usernameError").html("Username is available!");
-                            $("#usernameError").css("color","green");
-                            usernameAvailable = true;
-                        } 
-                        else {
-                            $("#usernameError").html("Username is unavailable!");
-                            $("#usernameError").css("color","red");
-                            usernameAvailable = false;
-                        }
-                    } 
-                });//ajax
-            });//username
-            
-            $("#password").change(function(){
-                $("#passwordLengthCheck").html("");
-                if(!lenCheckPassword($("#password").val().length)) {
-                    $("#passwordLengthCheck").html("Password must be at least 6 characters!");
-                    $("#passwordLengthCheck").css("color","red");
-                }
-            });
-            
-            $("#signupForm").on("submit",function(event) {
-               
-            //   alert("Submitting form...");
-               if (!isFormValid()){
-                   event.preventDefault();
-               }
-               else {
-                   window.open("welcome.html");
-               }
-            });
-            
-            function lenCheckPassword(inputLength){
-                let isMinLength = true;
-                if (inputLength < 6){
-                    isMinLength = false;
-                }
-                return isMinLength;
-                
-            }
-            
-            function isFormValid(){
-                let isValid = true;
-                if (!usernameAvailable){
-                    isValid = false;
-                }
-                
-                if ($("#username").val().length ==0){
-                    $("#usernameError").html("Username is required");
-                    $("#usernameError").css("color","red");
-                    isValid = false;
-                }
-                
-                if ($("#password").val() != $("#passwordAgain").val()){
-                    $("#passwordAgainError").html("Password Mismatch!");
-                    $("#passwordAgainError").css("color","red");
-                    isValid = false;
-                }
-                
-                if ($("#password").val().length < 6) {
-                    isValid = false;
-                }
-                
-                return isValid;
-            }
-            
-        </script>
+        <script type="text/javascript" src = "js/script.js"></script>
     </body>
 </html>
